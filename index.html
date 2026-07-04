@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nova — WebAssembly, running wild in your browser</title>
+    <meta
+      name="description"
+      content="A living showcase of WebAssembly: particle galaxies, fractal deep zooms, and real-time fluid dynamics — all Rust, compiled to WASM, running in your browser."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:title" content="nova — a WebAssembly showcase" />
+    <meta
+      property="og:description"
+      content="Particle galaxies, fractal deep zooms, and fluid dynamics — Rust compiled to WebAssembly, live in your browser."
+    />
+    <meta property="og:type" content="website" />
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <!-- ============ Panel: the particle galaxy ============ -->
+    <header id="hero" class="panel hero active" data-panel="galaxy">
+      <canvas aria-label="Interactive particle galaxy simulation"></canvas>
+      <div class="hero-content">
+        <h1 class="wordmark">nova</h1>
+        <p class="tagline">WebAssembly, running wild in your browser.</p>
+        <p class="hero-note">
+          Every particle on this page is <strong>Rust compiled to WebAssembly</strong>,
+          simulated live on your CPU. Move your cursor through it. Click and hold to push back.
+        </p>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============ Panel: fractal ============ -->
+      <section id="fractal" class="panel demo-panel" data-panel="fractal">
+        <div class="demo-head">
+          <p class="kicker">Demo 01 · raw number-crunching</p>
+          <h2>Fractal explorer</h2>
+          <p class="demo-copy">
+            Every pixel is an escape-time iteration over 64-bit complex numbers — up to fifteen
+            hundred rounds of multiply-add per point, re-run as you move. Drag to pan, scroll to
+            dive; the HUD shows real render times. Try the Burning Ship — the tiny ships along
+            its antenna hide the deepest structure.
+          </p>
+          <div class="demo-controls">
+            <button type="button" class="active" data-fractal-mode="0">Mandelbrot</button>
+            <button type="button" data-fractal-mode="1">Julia</button>
+            <button type="button" data-fractal-mode="2">Burning Ship</button>
+            <button type="button" class="demo-controls-reset" data-fractal-reset>Reset view</button>
+          </div>
+        </div>
+        <div class="demo-frame fractal-frame">
+          <canvas aria-label="Interactive Mandelbrot and Julia set explorer"></canvas>
+          <p class="limit-note">you've reached the edge of 64-bit floating point — ~10¹³× zoom</p>
+        </div>
+      </section>
+
+      <!-- ============ Panel: fluid ============ -->
+      <section id="fluid" class="panel demo-panel" data-panel="fluid">
+        <div class="demo-head">
+          <p class="kicker">Demo 02 · sandboxed, not slow</p>
+          <h2>Fluid dynamics</h2>
+          <p class="demo-copy">
+            A Navier–Stokes solver — the equations behind smoke, ink and weather — integrated in
+            real time on thirty-six thousand cells, every frame, inside the browser sandbox.
+            <strong>Drag through it to stir.</strong>
+          </p>
+        </div>
+        <div class="demo-frame fluid-frame">
+          <canvas aria-label="Interactive fluid dynamics simulation — drag to stir"></canvas>
+          <p class="stir-hint">drag to stir</p>
+        </div>
+      </section>
+
+      <!-- ============ Panel: about ============ -->
+      <div id="about" class="panel about-panel" data-panel="about">
+        <section class="copy-section">
+          <p class="kicker">What is it</p>
+          <h2>A fourth language for the web</h2>
+          <div class="two-col">
+            <div>
+              <p>
+                WebAssembly (WASM) is a compact binary instruction format — a portable compilation
+                target that runs alongside JavaScript in every modern browser. Code written in
+                Rust, C, C++, Go, Zig and dozens of other languages compiles down to a small
+                <code>.wasm</code> binary that the browser turns into machine code.
+              </p>
+              <p>
+                It isn't a plugin and it isn't a sandbox bolted onto the side of the web. It is a
+                W3C standard, shipped everywhere, designed from the first byte for speed, safety
+                and portability.
+              </p>
+            </div>
+            <div class="wat-card" aria-label="WebAssembly text format example">
+              <pre><code>(module
+  (func $step (param $dt f32)
+    (local $i i32)
+    ;; tight, typed, predictable —
+    ;; this is what the browser JITs
+    ;; into raw machine code
+    ...)
+  (export "step" (func $step))
+  (memory (export "memory") 17))</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="copy-section">
+          <div class="cards">
+            <article class="card">
+              <h3>Near-native speed</h3>
+              <p>
+                WASM is an ahead-of-time compilation target with a linear memory model — no
+                garbage-collection pauses, no dynamic-type overhead. Tight numeric loops run
+                within a whisker of native code, with SIMD when the math wants it.
+              </p>
+            </article>
+            <article class="card">
+              <h3>Sandboxed by design</h3>
+              <p>
+                Every module runs inside the browser's security sandbox with access to nothing
+                but the memory it owns and the functions you hand it. Native-class compute,
+                web-class safety.
+              </p>
+            </article>
+            <article class="card">
+              <h3>Language-agnostic</h3>
+              <p>
+                One binary format, any source language. This site is Rust, but the same
+                <code>.wasm</code> could come from C++, Go, Zig or C# — and JavaScript calls it
+                all the same way.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="copy-section stats-section">
+          <p class="kicker">Under the hood</p>
+          <h2>Compiled before it finishes downloading</h2>
+          <p>
+            Browsers compile WebAssembly <em>while it streams over the network</em> — by the time
+            the last byte arrives, the module is ready to run. No parse, no warm-up, no
+            interpreter tier. These numbers are live from your visit:
+          </p>
+          <div class="stat-row">
+            <div class="stat">
+              <span class="stat-value" id="stat-size">—</span>
+              <span class="stat-label">wasm payload, over the wire</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value" id="stat-init">—</span>
+              <span class="stat-label">fetch + compile + instantiate</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value" id="stat-demos">3</span>
+              <span class="stat-label">simulations in that one binary</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="copy-section">
+          <p class="kicker">Why it matters</p>
+          <h2>Ship compute, not infrastructure</h2>
+          <div class="two-col">
+            <p>
+              Workloads like the ones on this page used to mean native apps or a rack of servers
+              rendering frames on someone else's machine. WebAssembly moves the compute to the
+              edge of all edges — the visitor's own device — with nothing to install, nothing to
+              containerize, and a security model the browser has spent twenty-five years
+              hardening.
+            </p>
+            <p>
+              The entire engine behind this site is a single small binary, cached like any other
+              asset and started in microseconds. It runs the same on a phone, a laptop, and the
+              Raspberry Pi cluster serving it to you.
+            </p>
+          </div>
+        </section>
+
+        <footer class="footer">
+          <p>
+            <span class="wordmark-sm">nova</span> — built with Rust, wasm-bindgen, Vite &amp;
+            nginx · served from a homelab Kubernetes cluster ·
+            <a href="https://github.com/spencerrung/nova">source</a>
+          </p>
+        </footer>
+      </div>
+    </main>
+
+    <nav class="tabbar" aria-label="Demo navigation">
+      <button type="button" class="active" data-tab="galaxy">galaxy</button>
+      <button type="button" data-tab="fractal">fractal</button>
+      <button type="button" data-tab="fluid">fluid</button>
+      <button type="button" data-tab="about">about wasm</button>
+    </nav>
+  </body>
+</html>
