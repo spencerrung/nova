@@ -36,6 +36,7 @@ jobs:
           images: ${{ secrets.DOCKERHUB_USERNAME }}/nova
           tags: |
             type=sha,prefix=sha-
+            type=raw,value={{date 'YYYYMMDDHHmmss' tz='UTC'}}-{{sha}},enable={{is_default_branch}}
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push
